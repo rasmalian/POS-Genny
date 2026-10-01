@@ -84,20 +84,27 @@ async function callAPI(action, data = {}) {
         token: state.token,
         data: data
     };
+    try {
+        const response = await fetch(state.apiUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'text/plain', // Mencegah preflight CORS di GAS
+            },
+            body: JSON.stringify(payload)
+        });
 
-    const response = await fetch(state.apiUrl, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'text/plain', // Mencegah preflight CORS di GAS
-        },
-        body: JSON.stringify(payload)
-    });
-
-    const result = await response.json();
-    if (result.status === 'error') {
-        throw new Error(result.message);
+        const result = await response.json();
+        if (result.status === 'error') {
+            throw new Error(result.message);
+        }
+        return result;
+    } catch (e) {
+        // Membedakan error network (URL mati/salah) dengan error business logic
+        if (e instanceof TypeError && e.message.includes("fetch")) {
+            throw new Error("Koneksi gagal. URL API mungkin sudah usang atau tidak dapat diakses.");
+        }
+        throw e;
     }
-    return result;
 }
 
 // === AUTHENTICATION ===
@@ -144,6 +151,12 @@ function logout() {
     state.token = null;
     state.role = null;
     showLogin();
+}
+function resetApiUrl() {
+    document.getElementById('api-url').value = '';
+    localStorage.removeItem('pos_api_url');
+    state.apiUrl = '';
+    document.getElementById('api-url').focus();
 }
 
 function initApp() {
@@ -193,7 +206,7 @@ async function loadProducts() {
         renderAdminProducts();
     } catch (err) {
         showToast('Error', 'Gagal memuat produk: ' + err.message, true);
-        if (err.message.includes("Unauthorized") || err.message.includes("Token")) {
+        if (err.message.includes("Unauthorized") || err.message.includes("Token") || err.message.includes("usang")) {
             logout();
         }
     } finally {
