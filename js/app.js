@@ -8,6 +8,8 @@ const state = {
     posItemsPerPage: 20,
     sessions: {}, // Format: { "Plat Nomer": [{kode, nama, qty, ...}] }
     activeSession: null,
+    penjualan: [],
+    availablePenjualanSheets: [],
     kasData: {}
 };
 
@@ -274,6 +276,44 @@ async function loadSessions() {
     }
 }
 
+
+
+async function loadPenjualanSheets() {
+    if (state.role !== 'Admin') return;
+    try {
+        const res = await callAPI('getPenjualanSheets');
+        state.availablePenjualanSheets = res.data || [];
+        
+        const select = document.getElementById('penjualan-month');
+        if (!select) return;
+        select.innerHTML = '';
+        state.availablePenjualanSheets.forEach(sheet => {
+            const opt = document.createElement('option');
+            opt.value = sheet;
+            let label = sheet;
+            if (sheet === "Penjualan") label = "Bulan Ini";
+            else label = sheet.replace('Penjualan_', '').replace(/_/g, ' ');
+            opt.textContent = label;
+            select.appendChild(opt);
+        });
+    } catch (err) {
+        console.error("Gagal memuat list sheet penjualan", err);
+    }
+}
+
+async function loadPenjualan(sheetName = "Penjualan") {
+    if (state.role !== 'Admin') return;
+    showLoader();
+    try {
+        const res = await callAPI('getPenjualan', { sheetName });
+        state.penjualan = res.data || [];
+        renderPenjualan();
+    } catch (err) {
+        console.error("Gagal memuat data penjualan", err);
+    } finally {
+        hideLoader();
+    }
+}
 
 // === POS SESSIONS & CART LOGIC ===
 
@@ -722,4 +762,66 @@ async function saveKas(e) {
     } finally {
         hideLoader();
     }
+}
+
+// === PENJUALAN LOGIC ===
+function renderPenjualan() {
+    const tbody = document.getElementById('penjualan-table');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    
+    const filterText = document.getElementById('penjualan-search') ? document.getElementById('penjualan-search').value.toLowerCase() : '';
+    const filterDate = document.getElementById('penjualan-date') ? document.getElementById('penjualan-date').value : ''; // Format YYYY-MM-DD
+    
+    const filtered = state.penjualan.filter(row => {
+        const matchText = row.id.toLowerCase().includes(filterText) || 
+                          row.nama.toLowerCase().includes(filterText) ||
+                          row.user.toLowerCase().includes(filterText);
+        
+        let matchDate = true;
+        if (filterDate) {
+            try {
+                const d = new Date(row.tanggal);
+                if (!isNaN(d)) {
+                    const yy = d.getFullYear();
+                    const mm = String(d.getMonth() + 1).padStart(2, '0');
+                    const dd = String(d.getDate()).padStart(2, '0');
+                    const rowDateStr = `${yy}-${mm}-${dd}`;
+                    matchDate = (rowDateStr === filterDate);
+                }
+            } catch(e){}
+        }
+        
+        return matchText && matchDate;
+    });
+
+    if (filtered.length > 0) {
+        filtered.forEach(row => {
+            const tr = document.createElement('tr');
+            
+            let dateStr = row.tanggal;
+            try {
+                const d = new Date(row.tanggal);
+                if (!isNaN(d)) {
+                    dateStr = d.toLocaleString('id-ID', {day: 'numeric', month: 'short', year:'numeric', hour:'2-digit', minute:'2-digit'});
+                }
+            } catch(e){}
+
+            tr.innerHTML = `
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${dateStr}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-800">${row.id}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${row.user}</td>
+                <td class="px-6 py-4 text-sm text-gray-800">${row.kode} - ${row.nama}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-center font-bold text-gray-800">${row.qty}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-right font-extrabold text-[#5B65FF]">${formatRupiah(row.total)}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    } else {
+         tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500">Belum ada data penjualan yang cocok.</td></tr>';
+    }
+}
+
+function filterPenjualan() {
+    renderPenjualan();
 }

@@ -51,6 +51,7 @@
                             <div class="flex items-baseline space-x-2" id="nav-links">
                                 <a href="#" onclick="showView('pos-view')" class="nav-item bg-white/20 px-4 py-2 rounded-full text-sm font-bold transition-all" id="nav-pos">Kasir</a>
                                 <a href="#" onclick="showView('admin-view')" class="nav-item hover:bg-white/10 px-4 py-2 rounded-full text-sm font-bold transition-all hidden admin-only" id="nav-admin">Stok</a>
+                                <a href="#" onclick="showView('penjualan-view')" class="nav-item hover:bg-white/10 px-4 py-2 rounded-full text-sm font-bold transition-all hidden admin-only" id="nav-penjualan">Penjualan</a>
                                 <a href="#" onclick="showView('kas-view')" class="nav-item hover:bg-white/10 px-4 py-2 rounded-full text-sm font-bold transition-all hidden admin-only" id="nav-kas">Buku Kas</a>
                             </div>
                         </div>
@@ -76,6 +77,10 @@
             <button onclick="showView('kas-view')" class="flex items-center justify-center gap-2 h-12 px-4 text-gray-400 hover:text-[#5B65FF] rounded-full transition-all nav-item-mobile hidden admin-only" id="nav-kas-mobile">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 <span class="text-xs font-bold nav-text hidden">Kas</span>
+            </button>
+            <button onclick="showView('penjualan-view')" class="flex items-center justify-center gap-2 h-12 px-4 text-gray-400 hover:text-[#5B65FF] rounded-full transition-all nav-item-mobile hidden admin-only" id="nav-penjualan-mobile">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                <span class="text-xs font-bold nav-text hidden">Laporan</span>
             </button>
         </div>
 
@@ -126,6 +131,38 @@
                             <span id="cart-total-display" class="text-[#5B65FF]">Rp 0</span>
                         </div>
                         <button onclick="processCheckout()" id="btn-checkout" class="w-full bg-gradient-to-r from-green-400 to-emerald-500 hover:from-green-500 hover:to-emerald-600 text-white font-bold py-4 rounded-2xl shadow-lg transition-all transform active:scale-95 disabled:opacity-50 disabled:active:scale-100" disabled>Bayar & Selesaikan Sesi</button>
+                    </div>
+                </div>
+            </div>
+            <!-- 2.5 Data Penjualan View -->
+            <div id="penjualan-view" class="view-section hidden min-h-[80vh] h-auto">
+                <div class="bg-white rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-6 h-full flex flex-col">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                        <h2 class="text-2xl font-extrabold text-gray-800">Laporan Penjualan</h2>
+                    </div>
+                    <div class="flex flex-col md:flex-row gap-3 mb-6">
+                        <select id="penjualan-month" onchange="loadPenjualan(this.value)" class="w-full md:w-auto px-5 py-3 bg-[#F5F6FA] border-none text-gray-800 rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#5B65FF] font-bold cursor-pointer shadow-sm">
+                            <option value="Penjualan">Bulan Ini</option>
+                        </select>
+                        <input type="date" id="penjualan-date" onchange="filterPenjualan()" class="w-full md:w-auto px-5 py-3 bg-[#F5F6FA] border-none text-gray-500 rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#5B65FF] shadow-sm">
+                        <input type="text" id="penjualan-search" placeholder="Cari ID transaksi, nama barang, atau user..." class="w-full flex-grow px-5 py-3 bg-[#F5F6FA] border-none rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#5B65FF] shadow-sm" onkeyup="filterPenjualan()">
+                    </div>
+                    <div class="overflow-x-auto flex-grow">
+                        <table class="min-w-full divide-y divide-gray-100">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider rounded-tl-xl">Tanggal</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">ID Transaksi</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">User</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Barang</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider text-center">Qty</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider text-right rounded-tr-xl">Total Harga</th>
+                                </tr>
+                            </thead>
+                            <tbody id="penjualan-table" class="bg-white divide-y divide-gray-100">
+                                <!-- Table rows injected here -->
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
