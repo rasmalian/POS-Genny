@@ -354,7 +354,7 @@ function renderPOSProducts(filterText = '') {
         
         card.innerHTML = `
             <img src="${imgUrl}" alt="${p.name}" class="w-full h-32 object-cover rounded-xl mb-3 shadow-sm">
-            <h3 class="font-bold text-sm truncate text-gray-800">${p.name}</h3>
+            <h3 class="font-bold text-sm text-gray-800 leading-tight mb-1">${p.name}</h3>
             <p class="text-xs text-gray-500 mb-1">${p.code} &bull; Stok: <span class="font-bold ${p.stock <= 5 ? 'text-red-500' : ''}">${p.stock}</span></p>
             <p class="text-[#5B65FF] font-extrabold mt-1 text-lg">${formatRupiah(p.sellPrice)}</p>
         `;
