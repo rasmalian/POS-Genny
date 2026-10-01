@@ -507,19 +507,6 @@ async function processCheckout() {
         hideLoader();
     }
 }
-                <input type="number" onchange="setCartQty(${index}, this.value)" value="${item.qty}" class="w-10 text-sm font-bold text-center text-gray-800 bg-transparent border-none focus:outline-none focus:ring-2 focus:ring-[#5B65FF] rounded px-1 hide-arrows">
-                <button onclick="updateCartQty(${index}, 1)" class="w-7 h-7 flex items-center justify-center bg-[#5B65FF] hover:bg-[#4A55FF] text-white rounded-lg font-bold transition-colors">+</button>
-            </div>
-            <div class="text-right flex flex-col items-end w-1/4">
-                <p class="font-bold text-sm text-gray-800">${formatRupiah(item.total_harga)}</p>
-                <button onclick="removeFromCart(${index})" class="text-xs text-red-500 mt-1 hover:text-red-700 font-medium transition-colors">Hapus</button>
-            </div>
-        `;
-        container.appendChild(el);
-    });
-    
-    totalDisplay.textContent = formatRupiah(total);
-}
 
 // === ADMIN (STOK) LOGIC ===
 function renderAdminProducts(filterText = '') {
