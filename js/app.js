@@ -357,20 +357,20 @@ function renderCart() {
     state.cart.forEach((item, index) => {
         total += item.total_harga;
         const el = document.createElement('div');
-        el.className = 'flex justify-between items-center border-b py-2';
+        el.className = 'flex justify-between items-center bg-[#F5F6FA] rounded-2xl p-4 mb-3 transition-all hover:bg-blue-50';
         el.innerHTML = `
-            <div class="flex-grow">
-                <p class="font-bold text-sm">${item.nama}</p>
-                <p class="text-xs text-gray-500">${formatRupiah(item.harga_satuan)}</p>
+            <div class="flex-grow w-1/2 pr-2">
+                <p class="font-bold text-sm text-gray-800 truncate">${item.nama}</p>
+                <p class="text-xs text-[#5B65FF] font-medium">${formatRupiah(item.harga_satuan)}</p>
             </div>
-            <div class="flex items-center space-x-2 mr-4">
-                <button onclick="updateCartQty(${index}, -1)" class="bg-gray-200 px-2 rounded">-</button>
-                <span class="text-sm w-6 text-center">${item.qty}</span>
-                <button onclick="updateCartQty(${index}, 1)" class="bg-gray-200 px-2 rounded">+</button>
+            <div class="flex items-center space-x-2 bg-white rounded-xl p-1 shadow-sm mr-3">
+                <button onclick="updateCartQty(${index}, -1)" class="w-7 h-7 flex items-center justify-center bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-lg font-bold transition-colors">-</button>
+                <span class="text-sm font-bold w-6 text-center text-gray-800">${item.qty}</span>
+                <button onclick="updateCartQty(${index}, 1)" class="w-7 h-7 flex items-center justify-center bg-[#5B65FF] hover:bg-[#4A55FF] text-white rounded-lg font-bold transition-colors">+</button>
             </div>
-            <div class="text-right flex flex-col items-end">
-                <p class="font-bold text-sm">${formatRupiah(item.total_harga)}</p>
-                <button onclick="removeFromCart(${index})" class="text-xs text-red-500 mt-1">Hapus</button>
+            <div class="text-right flex flex-col items-end w-1/4">
+                <p class="font-bold text-sm text-gray-800">${formatRupiah(item.total_harga)}</p>
+                <button onclick="removeFromCart(${index})" class="text-xs text-red-500 mt-1 hover:text-red-700 font-medium transition-colors">Hapus</button>
             </div>
         `;
         container.appendChild(el);
