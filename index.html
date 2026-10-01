@@ -21,19 +21,19 @@
     </script>
     <link href="css/style.css" rel="stylesheet">
 </head>
-<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen text-gray-800 font-sans pb-16 md:pb-0">
+<body class="bg-[#F0F2F9] min-h-screen text-gray-800 font-sans pb-24 md:pb-0">
     
     <!-- Loader -->
-    <div id="loader" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex justify-center items-center">
-        <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500"></div>
+    <div id="loader" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex justify-center items-center">
+        <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-[#5B65FF]"></div>
     </div>
 
     <!-- Notification Toast -->
     <div id="toast" class="fixed top-5 right-5 z-50 transform transition-all duration-300 translate-x-full opacity-0">
-        <div class="bg-white border-l-4 rounded shadow-lg p-4 w-80 flex items-center justify-between">
+        <div class="bg-white rounded-2xl shadow-xl p-4 w-80 flex items-center justify-between border-l-4 border-[#5B65FF]">
             <div>
-                <p id="toast-title" class="font-bold"></p>
-                <p id="toast-msg" class="text-sm"></p>
+                <p id="toast-title" class="font-bold text-gray-800"></p>
+                <p id="toast-msg" class="text-sm text-gray-500"></p>
             </div>
             <button onclick="hideToast()" class="text-gray-400 hover:text-gray-600">&times;</button>
         </div>
@@ -42,99 +42,112 @@
     <!-- MAIN APP CONTAINER -->
     <div id="app-container" class="h-full flex flex-col hidden">
         <!-- Navbar -->
-        <nav class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white shadow-lg sticky top-0 z-30">
+        <nav class="bg-gradient-to-r from-[#5B65FF] to-[#9146FF] text-white shadow-md sticky top-0 z-30 rounded-b-3xl">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex items-center justify-between h-16">
                     <div class="flex items-center">
-                        <span class="font-bold text-xl">POS System</span>
+                        <span class="font-extrabold text-xl tracking-tight">POS System</span>
                         <div class="hidden md:block ml-10">
-                            <div class="flex items-baseline space-x-4" id="nav-links">
-                                <a href="#" onclick="showView('pos-view')" class="nav-item bg-white/20 px-3 py-2 rounded-md text-sm font-medium transition-all" id="nav-pos">Kasir</a>
-                                <a href="#" onclick="showView('admin-view')" class="nav-item hover:bg-white/10 px-3 py-2 rounded-md text-sm font-medium transition-all hidden admin-only" id="nav-admin">Stok Barang</a>
-                                <a href="#" onclick="showView('kas-view')" class="nav-item hover:bg-white/10 px-3 py-2 rounded-md text-sm font-medium transition-all hidden admin-only" id="nav-kas">Buku Kas</a>
+                            <div class="flex items-baseline space-x-2" id="nav-links">
+                                <a href="#" onclick="showView('pos-view')" class="nav-item bg-white/20 px-4 py-2 rounded-full text-sm font-bold transition-all" id="nav-pos">Kasir</a>
+                                <a href="#" onclick="showView('admin-view')" class="nav-item hover:bg-white/10 px-4 py-2 rounded-full text-sm font-bold transition-all hidden admin-only" id="nav-admin">Stok</a>
+                                <a href="#" onclick="showView('kas-view')" class="nav-item hover:bg-white/10 px-4 py-2 rounded-full text-sm font-bold transition-all hidden admin-only" id="nav-kas">Buku Kas</a>
                             </div>
                         </div>
                     </div>
                     <div>
-                        <span class="mr-4 text-sm font-medium" id="user-info">Role: User</span>
-                        <button onclick="logout()" class="bg-red-500 hover:bg-red-600 transition-colors px-3 py-1.5 md:px-4 md:py-2 rounded text-xs md:text-sm font-bold shadow-md">Logout</button>
+                        <span class="mr-4 text-sm font-medium opacity-80" id="user-info">Role: User</span>
+                        <button onclick="logout()" class="bg-white/20 hover:bg-white/30 transition-colors px-4 py-2 rounded-full text-sm font-bold shadow-sm">Logout</button>
                     </div>
                 </div>
             </div>
         </nav>
 
         <!-- Mobile Bottom Nav -->
-        <div class="md:hidden fixed bottom-0 left-0 right-0 bg-white shadow-[0_-2px_10px_rgba(0,0,0,0.1)] z-40 flex justify-around items-center h-16 border-t border-gray-200">
-            <button onclick="showView('pos-view')" class="flex-1 flex flex-col items-center justify-center h-full text-gray-500 hover:text-blue-600 transition-colors nav-item-mobile" id="nav-pos-mobile">
-                <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                <span class="text-[10px] font-medium">Kasir</span>
+        <div class="md:hidden fixed bottom-6 left-1/2 transform -translate-x-1/2 w-11/12 max-w-sm bg-white rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] z-40 flex justify-between items-center h-16 px-2">
+            <button onclick="showView('pos-view')" class="flex items-center justify-center gap-2 h-12 px-5 text-[#5B65FF] bg-blue-50 rounded-full transition-all nav-item-mobile" id="nav-pos-mobile">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                <span class="text-xs font-bold nav-text">Kasir</span>
             </button>
-            <button onclick="showView('admin-view')" class="flex-1 flex flex-col items-center justify-center h-full text-gray-500 hover:text-blue-600 transition-colors nav-item-mobile hidden admin-only" id="nav-admin-mobile">
-                <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
-                <span class="text-[10px] font-medium">Stok</span>
+            <button onclick="showView('admin-view')" class="flex items-center justify-center gap-2 h-12 px-4 text-gray-400 hover:text-[#5B65FF] rounded-full transition-all nav-item-mobile hidden admin-only" id="nav-admin-mobile">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+                <span class="text-xs font-bold nav-text hidden">Stok</span>
             </button>
-            <button onclick="showView('kas-view')" class="flex-1 flex flex-col items-center justify-center h-full text-gray-500 hover:text-blue-600 transition-colors nav-item-mobile hidden admin-only" id="nav-kas-mobile">
-                <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                <span class="text-[10px] font-medium">Kas</span>
+            <button onclick="showView('kas-view')" class="flex items-center justify-center gap-2 h-12 px-4 text-gray-400 hover:text-[#5B65FF] rounded-full transition-all nav-item-mobile hidden admin-only" id="nav-kas-mobile">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <span class="text-xs font-bold nav-text hidden">Kas</span>
             </button>
         </div>
 
         <!-- VIEWS -->
-        <main class="flex-grow overflow-auto p-4 sm:p-6 lg:p-8">
+        <main class="flex-grow p-4 sm:p-6 lg:p-8">
             
             <!-- 1. POS View -->
-            <div id="pos-view" class="view-section hidden h-full flex flex-col md:flex-row gap-6">
+            <div id="pos-view" class="view-section hidden flex flex-col md:flex-row gap-6 h-[80vh]">
                 <!-- Product List -->
-                <div class="w-full md:w-2/3 flex flex-col h-[50vh] md:h-full bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-white/50 p-4">
+                <div class="w-full md:w-2/3 flex flex-col h-full bg-white rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-5">
                     <div class="mb-4">
-                        <input type="text" id="pos-search" placeholder="Cari barang..." class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" onkeyup="filterPOSProducts()">
+                        <input type="text" id="pos-search" placeholder="Cari barang..." class="w-full px-5 py-3 bg-[#F5F6FA] text-gray-800 border-none rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#5B65FF]" onkeyup="filterPOSProducts()">
                     </div>
                     <div id="pos-product-list" class="grid grid-cols-2 lg:grid-cols-3 gap-4 overflow-y-auto pr-2 pb-4">
                         <!-- Products will be injected here -->
                     </div>
                 </div>
                 
-                <!-- Cart -->
-                <div class="w-full md:w-1/3 h-[45vh] md:h-full bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-white/50 p-4 flex flex-col">
-                    <h2 class="text-xl font-bold mb-4 border-b pb-2">Keranjang</h2>
+                <!-- Cart & Sessions -->
+                <div class="w-full md:w-1/3 h-full bg-white rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-5 flex flex-col">
+                    
+                    <!-- Session Manager -->
+                    <div class="mb-4 bg-[#F5F6FA] p-3 rounded-2xl">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm font-bold text-gray-600">Sesi Pelanggan (Plat No)</span>
+                            <button onclick="createNewSession()" class="text-xs bg-[#5B65FF] text-white px-3 py-1 rounded-full font-bold hover:bg-[#4A55FF] shadow-sm">+ Sesi Baru</button>
+                        </div>
+                        <select id="session-select" onchange="switchSession(this.value)" class="w-full bg-white border-none text-sm font-bold text-gray-800 rounded-xl px-3 py-2 focus:ring-2 focus:ring-[#5B65FF] focus:outline-none shadow-sm">
+                            <option value="">Pilih atau Buat Sesi Baru...</option>
+                            <!-- Sessions injected here -->
+                        </select>
+                    </div>
+
+                    <h2 class="text-xl font-extrabold mb-3 text-gray-800 border-b pb-2">Keranjang Sesi</h2>
                     <div id="cart-items" class="flex-grow overflow-y-auto mb-4">
                         <!-- Cart items injected here -->
-                        <div class="text-center text-gray-400 mt-10" id="empty-cart-msg">Keranjang kosong</div>
+                        <div class="text-center text-gray-400 mt-10" id="empty-cart-msg">Keranjang kosong atau belum ada sesi.</div>
                     </div>
                     <div class="border-t pt-4">
-                        <div class="flex justify-between font-bold text-lg mb-4">
+                        <div class="flex justify-between font-extrabold text-xl mb-4 text-gray-800">
                             <span>Total:</span>
-                            <span id="cart-total-display">Rp 0</span>
+                            <span id="cart-total-display" class="text-[#5B65FF]">Rp 0</span>
                         </div>
-                        <button onclick="processCheckout()" id="btn-checkout" class="w-full bg-gradient-to-r from-green-400 to-emerald-600 hover:from-green-500 hover:to-emerald-700 text-white font-bold py-3 rounded-lg shadow-md transition-all transform active:scale-95 disabled:opacity-50 disabled:active:scale-100" disabled>Bayar & Selesaikan</button>
+                        <button onclick="processCheckout()" id="btn-checkout" class="w-full bg-gradient-to-r from-green-400 to-emerald-500 hover:from-green-500 hover:to-emerald-600 text-white font-bold py-4 rounded-2xl shadow-lg transition-all transform active:scale-95 disabled:opacity-50 disabled:active:scale-100" disabled>Bayar & Selesaikan Sesi</button>
                     </div>
                 </div>
             </div>
 
             <!-- 2. Admin View (Stok Barang) -->
-            <div id="admin-view" class="view-section hidden h-full">
-                <div class="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg border border-white/50 p-4 md:p-6 h-full flex flex-col">
-                    <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-xl md:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-700 to-indigo-700">Stok Barang</h2>
-                        <button onclick="openProductModal()" class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-3 py-2 md:px-4 md:py-2 rounded-lg shadow font-medium text-sm md:text-base">+ Tambah</button>
+            <div id="admin-view" class="view-section hidden h-[80vh]">
+                <div class="bg-white rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-6 h-full flex flex-col">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                        <h2 class="text-2xl font-extrabold text-gray-800">Stok Barang</h2>
+                        <button onclick="openProductModal()" class="bg-gradient-to-r from-[#5B65FF] to-[#9146FF] hover:opacity-90 text-white px-5 py-3 rounded-2xl shadow font-bold text-sm">+ Tambah Barang</button>
                     </div>
                     <div class="mb-4">
-                        <input type="text" id="admin-search" placeholder="Cari barang..." class="w-full md:w-1/3 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white/50" onkeyup="filterAdminProducts()">
+                        <input type="text" id="admin-search" placeholder="Cari barang..." class="w-full md:w-1/3 px-5 py-3 bg-[#F5F6FA] border-none rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#5B65FF]" onkeyup="filterAdminProducts()">
                     </div>
                     <div class="overflow-x-auto flex-grow">
-                        <table class="min-w-full divide-y divide-gray-200">
+                        <table class="min-w-full divide-y divide-gray-100">
                             <thead class="bg-gray-50">
                                 <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Foto</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kode</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Barang</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stok</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Harga Beli</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Harga Jual</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider rounded-tl-xl">Foto</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Kode</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Nama Barang</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Stok</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Harga Beli</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Harga Jual</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider rounded-tr-xl">Aksi</th>
                                 </tr>
                             </thead>
-                            <tbody id="admin-product-table" class="bg-white divide-y divide-gray-200">
+                            <tbody id="admin-product-table" class="bg-white divide-y divide-gray-100">
                                 <!-- Table rows injected here -->
                             </tbody>
                         </table>
@@ -143,32 +156,32 @@
             </div>
 
             <!-- 3. Kas View -->
-            <div id="kas-view" class="view-section hidden h-full">
-                <div class="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg border border-white/50 p-4 md:p-6 h-full flex flex-col">
-                    <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-xl md:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-700 to-indigo-700">Buku Kas</h2>
-                        <button onclick="openKasModal()" class="bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-white px-3 py-2 md:px-4 md:py-2 rounded-lg shadow font-medium text-sm md:text-base">Penyesuaian Manual</button>
+            <div id="kas-view" class="view-section hidden h-[80vh]">
+                <div class="bg-white rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-6 h-full flex flex-col">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                        <h2 class="text-2xl font-extrabold text-gray-800">Buku Kas</h2>
+                        <button onclick="openKasModal()" class="bg-gradient-to-r from-[#FF8A00] to-[#FFB800] hover:opacity-90 text-white px-5 py-3 rounded-2xl shadow font-bold text-sm">Penyesuaian Manual</button>
                     </div>
                     
-                    <div class="bg-gradient-to-br from-blue-50 to-indigo-100 border border-blue-200/50 rounded-xl p-6 mb-6 flex flex-col items-center justify-center shadow-inner">
-                        <span class="text-gray-500 font-medium">Saldo Kas Saat Ini</span>
-                        <span class="text-3xl md:text-4xl font-bold text-indigo-700 mt-2 drop-shadow-sm" id="current-kas-display">Rp 0</span>
+                    <div class="bg-gradient-to-r from-[#5B65FF] to-[#9146FF] rounded-[2rem] p-8 mb-8 flex flex-col items-center justify-center shadow-lg text-white">
+                        <span class="text-white/80 font-medium">Saldo Kas Saat Ini</span>
+                        <span class="text-4xl md:text-5xl font-extrabold mt-2 tracking-tight" id="current-kas-display">Rp 0</span>
                     </div>
 
-                    <h3 class="font-bold text-lg mb-4 border-b pb-2">Histori Mutasi Terakhir</h3>
+                    <h3 class="font-extrabold text-xl mb-4 text-gray-800">Histori Mutasi Terakhir</h3>
                     <div class="overflow-x-auto flex-grow">
-                        <table class="min-w-full divide-y divide-gray-200">
+                        <table class="min-w-full divide-y divide-gray-100">
                             <thead class="bg-gray-50">
                                 <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Keterangan</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Masuk</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Keluar</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Saldo Akhir</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider rounded-tl-xl">Tanggal</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Keterangan</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Masuk</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Keluar</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Saldo Akhir</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider rounded-tr-xl">User</th>
                                 </tr>
                             </thead>
-                            <tbody id="kas-history-table" class="bg-white divide-y divide-gray-200">
+                            <tbody id="kas-history-table" class="bg-white divide-y divide-gray-100">
                                 <!-- History rows injected here -->
                             </tbody>
                         </table>
@@ -180,36 +193,35 @@
     </div>
 
     <!-- LOGIN CONTAINER -->
-    <div id="login-container" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-600 via-indigo-700 to-purple-800 py-12 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-md w-full space-y-8 bg-white p-10 rounded-xl shadow-lg">
+    <div id="login-container" class="min-h-screen flex items-center justify-center bg-[#F0F2F9] py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-md w-full space-y-8 bg-white p-10 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
             <div class="text-center">
-                <div class="mx-auto w-16 h-16 bg-gradient-to-tr from-blue-400 to-purple-400 rounded-full flex items-center justify-center shadow-lg mb-4">
-                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4"></path></svg>
+                <div class="mx-auto w-20 h-20 bg-gradient-to-tr from-[#5B65FF] to-[#9146FF] rounded-3xl flex items-center justify-center shadow-lg mb-6 transform -rotate-6">
+                    <svg class="w-10 h-10 text-white transform rotate-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4"></path></svg>
                 </div>
                 <h2 class="text-3xl font-extrabold text-gray-900 tracking-tight">Login POS</h2>
                 <p class="mt-2 text-sm text-gray-500">Silakan masukkan kredensial Anda</p>
             </div>
             <form class="mt-8 space-y-6" onsubmit="handleLogin(event)">
-                <div class="rounded-md shadow-sm -space-y-px">
+                <div class="space-y-4">
                     <div>
-                        <label for="username" class="sr-only">Username</label>
-                        <input id="username" name="username" type="text" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm" placeholder="Username">
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Username</label>
+                        <input id="username" name="username" type="text" required class="appearance-none relative block w-full px-4 py-3 bg-[#F5F6FA] border-none text-gray-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#5B65FF]" placeholder="Masukkan username">
                     </div>
                     <div>
-                        <label for="password" class="sr-only">Password</label>
-                        <input id="password" name="password" type="password" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm" placeholder="Password">
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Password</label>
+                        <input id="password" name="password" type="password" required class="appearance-none relative block w-full px-4 py-3 bg-[#F5F6FA] border-none text-gray-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#5B65FF]" placeholder="Masukkan password">
                     </div>
                 </div>
-                <div>
+                <div class="mt-6">
                     <div class="flex justify-between items-center mb-1">
-                        <label class="block text-sm font-medium text-gray-700">API URL (GAS Web App)</label>
-                        <button type="button" onclick="resetApiUrl()" class="text-xs text-red-500 hover:text-red-700 focus:outline-none">Reset URL</button>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider">API URL (GAS)</label>
+                        <button type="button" onclick="resetApiUrl()" class="text-xs font-bold text-red-500 hover:text-red-700 focus:outline-none">Reset URL</button>
                     </div>
-                    <input id="api-url" type="url" required class="appearance-none relative block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="https://script.google.com/macros/s/.../exec">
-                    <p class="text-xs text-gray-500 mt-1">Disimpan di localStorage browser.</p>
+                    <input id="api-url" type="url" required class="appearance-none relative block w-full px-4 py-3 bg-[#F5F6FA] border-none text-gray-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#5B65FF] text-sm" placeholder="https://script.google.com/macros/s/...">
                 </div>
-                <div>
-                    <button type="submit" class="group relative w-full flex justify-center py-2.5 px-4 border border-transparent text-sm font-bold rounded-lg text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 shadow-md transition-all transform active:scale-95">
+                <div class="pt-4">
+                    <button type="submit" class="w-full flex justify-center py-4 px-4 border border-transparent text-sm font-bold rounded-2xl text-white bg-gradient-to-r from-[#5B65FF] to-[#9146FF] hover:opacity-90 shadow-lg transition-all transform active:scale-95">
                         Sign in
                     </button>
                 </div>
@@ -218,79 +230,79 @@
     </div>
 
     <!-- MODAL: Product Form -->
-    <div id="product-modal" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden flex justify-center items-center p-4 overflow-y-auto">
-        <div class="bg-white rounded-lg shadow-xl w-full max-w-md max-h-full flex flex-col">
-            <div class="flex justify-between items-center p-4 border-b">
-                <h3 class="text-lg font-bold" id="product-modal-title">Tambah Barang</h3>
-                <button onclick="closeModal('product-modal')" class="text-gray-400 hover:text-gray-600">&times;</button>
+    <div id="product-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 hidden flex justify-center items-center p-4">
+        <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-md max-h-full flex flex-col overflow-hidden">
+            <div class="flex justify-between items-center p-6 border-b border-gray-100">
+                <h3 class="text-xl font-extrabold text-gray-800" id="product-modal-title">Tambah Barang</h3>
+                <button onclick="closeModal('product-modal')" class="text-gray-400 hover:text-gray-600 bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center transition-colors">&times;</button>
             </div>
-            <div class="p-4 overflow-y-auto flex-grow">
+            <div class="p-6 overflow-y-auto flex-grow">
                 <form id="product-form" onsubmit="saveProduct(event)">
                     <div class="space-y-4">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Kode Barang</label>
-                            <input type="text" id="prod-code" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Kode Barang</label>
+                            <input type="text" id="prod-code" required class="w-full px-4 py-3 bg-[#F5F6FA] border-none rounded-xl focus:ring-2 focus:ring-[#5B65FF]">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Nama Barang</label>
-                            <input type="text" id="prod-name" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Nama Barang</label>
+                            <input type="text" id="prod-name" required class="w-full px-4 py-3 bg-[#F5F6FA] border-none rounded-xl focus:ring-2 focus:ring-[#5B65FF]">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Stok</label>
-                            <input type="number" id="prod-stock" required min="0" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Stok</label>
+                            <input type="number" id="prod-stock" required min="0" class="w-full px-4 py-3 bg-[#F5F6FA] border-none rounded-xl focus:ring-2 focus:ring-[#5B65FF] hide-arrows">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Harga Beli</label>
-                            <input type="text" id="prod-buy-price" required oninput="formatRupiahInput(this)" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Harga Beli</label>
+                            <input type="text" id="prod-buy-price" required oninput="formatRupiahInput(this)" class="w-full px-4 py-3 bg-[#F5F6FA] border-none rounded-xl focus:ring-2 focus:ring-[#5B65FF]">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Harga Jual</label>
-                            <input type="text" id="prod-sell-price" required oninput="formatRupiahInput(this)" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Harga Jual</label>
+                            <input type="text" id="prod-sell-price" required oninput="formatRupiahInput(this)" class="w-full px-4 py-3 bg-[#F5F6FA] border-none rounded-xl focus:ring-2 focus:ring-[#5B65FF]">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Foto Barang</label>
-                            <input type="file" id="prod-image" accept="image/*" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
-                            <p class="text-xs text-gray-500 mt-1">Kosongkan jika tidak ingin mengubah foto (saat edit).</p>
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Foto Barang</label>
+                            <input type="file" id="prod-image" accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-[#5B65FF]/10 file:text-[#5B65FF] hover:file:bg-[#5B65FF]/20 cursor-pointer">
+                            <p class="text-xs text-gray-400 mt-2">Kosongkan jika tidak ingin mengubah foto.</p>
                         </div>
                         <input type="hidden" id="prod-image-url">
                     </div>
                 </form>
             </div>
-            <div class="p-4 border-t bg-gray-50 flex justify-end">
-                <button type="button" onclick="closeModal('product-modal')" class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded shadow-sm mr-2 hover:bg-gray-50">Batal</button>
-                <button type="submit" form="product-form" class="bg-blue-600 text-white px-4 py-2 rounded shadow hover:bg-blue-700">Simpan</button>
+            <div class="p-6 border-t border-gray-100 bg-gray-50 flex justify-end gap-3">
+                <button type="button" onclick="closeModal('product-modal')" class="bg-white text-gray-600 px-6 py-3 rounded-xl shadow-sm hover:bg-gray-100 font-bold transition-colors">Batal</button>
+                <button type="submit" form="product-form" class="bg-gradient-to-r from-[#5B65FF] to-[#9146FF] text-white px-6 py-3 rounded-xl shadow-md hover:opacity-90 font-bold transition-colors">Simpan</button>
             </div>
         </div>
     </div>
 
     <!-- MODAL: Kas Penyesuaian -->
-    <div id="kas-modal" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden flex justify-center items-center p-4">
-        <div class="bg-white rounded-lg shadow-xl w-full max-w-md">
-            <div class="flex justify-between items-center p-4 border-b">
-                <h3 class="text-lg font-bold">Penyesuaian Saldo Kas</h3>
-                <button onclick="closeModal('kas-modal')" class="text-gray-400 hover:text-gray-600">&times;</button>
+    <div id="kas-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 hidden flex justify-center items-center p-4">
+        <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-md overflow-hidden">
+            <div class="flex justify-between items-center p-6 border-b border-gray-100">
+                <h3 class="text-xl font-extrabold text-gray-800">Penyesuaian Saldo</h3>
+                <button onclick="closeModal('kas-modal')" class="text-gray-400 hover:text-gray-600 bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center transition-colors">&times;</button>
             </div>
-            <div class="p-4">
-                <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-4 text-sm text-red-700">
-                    <p class="font-bold">Peringatan!</p>
-                    <p>Aksi ini akan menimpa saldo akhir kas dan merekam jejak penyesuaian. Pastikan Anda memiliki alasan audit yang kuat.</p>
+            <div class="p-6">
+                <div class="bg-red-50 rounded-xl p-4 mb-6 text-sm text-red-700 border border-red-100">
+                    <p class="font-bold mb-1">Peringatan Audit!</p>
+                    <p>Aksi ini menimpa saldo akhir kas. Pastikan Anda memiliki alasan audit yang kuat.</p>
                 </div>
                 <form id="kas-form" onsubmit="saveKas(event)">
                     <div class="space-y-4">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Saldo Akhir Baru</label>
-                            <input type="text" id="kas-new-saldo" required oninput="formatRupiahInput(this)" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Saldo Akhir Baru</label>
+                            <input type="text" id="kas-new-saldo" required oninput="formatRupiahInput(this)" class="w-full px-4 py-3 bg-[#F5F6FA] border-none rounded-xl focus:ring-2 focus:ring-[#FF8A00]">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Keterangan / Alasan</label>
-                            <input type="text" id="kas-notes" required placeholder="Contoh: Koreksi hitung fisik" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Keterangan</label>
+                            <input type="text" id="kas-notes" required placeholder="Cth: Koreksi hitung fisik" class="w-full px-4 py-3 bg-[#F5F6FA] border-none rounded-xl focus:ring-2 focus:ring-[#FF8A00]">
                         </div>
                     </div>
                 </form>
             </div>
-            <div class="p-4 border-t bg-gray-50 flex justify-end">
-                <button type="button" onclick="closeModal('kas-modal')" class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded shadow-sm mr-2 hover:bg-gray-50">Batal</button>
-                <button type="submit" form="kas-form" class="bg-yellow-500 text-white px-4 py-2 rounded shadow hover:bg-yellow-600">Sesuaikan Saldo</button>
+            <div class="p-6 border-t border-gray-100 bg-gray-50 flex justify-end gap-3">
+                <button type="button" onclick="closeModal('kas-modal')" class="bg-white text-gray-600 px-6 py-3 rounded-xl shadow-sm hover:bg-gray-100 font-bold transition-colors">Batal</button>
+                <button type="submit" form="kas-form" class="bg-gradient-to-r from-[#FF8A00] to-[#FFB800] text-white px-6 py-3 rounded-xl shadow-md hover:opacity-90 font-bold transition-colors">Sesuaikan</button>
             </div>
         </div>
     </div>

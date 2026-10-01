@@ -4,7 +4,8 @@ const state = {
     role: localStorage.getItem('pos_role') || null,
     apiUrl: localStorage.getItem('pos_api_url') || '',
     products: [],
-    cart: [],
+    sessions: {}, // Format: { "Plat Nomer": [{kode, nama, qty, ...}] }
+    activeSession: null,
     kasData: {}
 };
 
@@ -174,12 +175,7 @@ function initApp() {
 
     // Load initial data
     loadProducts();
-    if (state.role === 'Admin') {
-        loadKas();
-    }
-    
-    // Load initial data
-    loadProducts();
+    loadSessions();
     if (state.role === 'Admin') {
         loadKas();
     }
@@ -261,8 +257,72 @@ async function loadKas() {
         console.error("Gagal memuat data kas", err);
     }
 }
+async function loadSessions() {
+    try {
+        const res = await callAPI('getSessions');
+        state.sessions = res.data || {};
+        renderSessionDropdown();
+        
+        const sessionNames = Object.keys(state.sessions);
+        if (sessionNames.length > 0 && !state.activeSession) {
+            switchSession(sessionNames[0]);
+        }
+    } catch (err) {
+        console.error("Gagal memuat sesi aktif", err);
+    }
+}
 
-// === POS LOGIC ===
+
+// === POS SESSIONS & CART LOGIC ===
+
+function renderSessionDropdown() {
+    const select = document.getElementById('session-select');
+    select.innerHTML = '<option value="">Pilih atau Buat Sesi Baru...</option>';
+    
+    Object.keys(state.sessions).forEach(sesi => {
+        const opt = document.createElement('option');
+        opt.value = sesi;
+        opt.textContent = sesi;
+        if (sesi === state.activeSession) opt.selected = true;
+        select.appendChild(opt);
+    });
+}
+
+function createNewSession() {
+    const platNo = prompt("Masukkan Sesi / Nomer Plat Kendaraan:");
+    if (!platNo || platNo.trim() === "") return;
+    
+    const sesiName = platNo.trim().toUpperCase();
+    if (!state.sessions[sesiName]) {
+        state.sessions[sesiName] = [];
+        renderSessionDropdown();
+    }
+    switchSession(sesiName);
+}
+
+function switchSession(sesiName) {
+    state.activeSession = sesiName;
+    document.getElementById('session-select').value = sesiName;
+    renderCart();
+}
+
+async function syncActiveSession() {
+    if (!state.activeSession) return;
+    
+    const payload = {
+        sesi: state.activeSession,
+        cart: state.sessions[state.activeSession]
+    };
+    
+    try {
+        // Background sync, no loader needed to not block UI
+        await callAPI('syncSession', payload);
+    } catch (err) {
+        console.error("Gagal sinkronisasi sesi ke database", err);
+        showToast('Error', 'Gagal menyimpan draf sesi ke server', true);
+    }
+}
+
 function renderPOSProducts(filterText = '') {
     const container = document.getElementById('pos-product-list');
     container.innerHTML = '';
@@ -274,16 +334,16 @@ function renderPOSProducts(filterText = '') {
 
     filtered.forEach(p => {
         const card = document.createElement('div');
-        card.className = `border rounded-lg p-3 cursor-pointer hover:shadow-md transition bg-white flex flex-col ${p.stock <= 0 ? 'opacity-50' : ''}`;
+        card.className = `p-4 cursor-pointer hover:shadow-xl transition-all transform hover:-translate-y-1 bg-[#F5F6FA] flex flex-col rounded-2xl ${p.stock <= 0 ? 'opacity-50 grayscale' : ''}`;
         card.onclick = () => p.stock > 0 ? addToCart(p) : showToast('Stok Habis', `${p.name} tidak tersedia`, true);
         
         const imgUrl = p.imageUrl || 'https://via.placeholder.com/150?text=No+Image';
         
         card.innerHTML = `
-            <img src="${imgUrl}" alt="${p.name}" class="w-full h-32 object-cover rounded-md mb-2">
-            <h3 class="font-bold text-sm truncate">${p.name}</h3>
-            <p class="text-xs text-gray-500 mb-1">${p.code} | Stok: ${p.stock}</p>
-            <p class="text-blue-600 font-bold mt-auto">${formatRupiah(p.sellPrice)}</p>
+            <img src="${imgUrl}" alt="${p.name}" class="w-full h-32 object-cover rounded-xl mb-3 shadow-sm">
+            <h3 class="font-bold text-sm truncate text-gray-800">${p.name}</h3>
+            <p class="text-xs text-gray-500 mb-1">${p.code} &bull; Stok: <span class="font-bold ${p.stock <= 5 ? 'text-red-500' : ''}">${p.stock}</span></p>
+            <p class="text-[#5B65FF] font-extrabold mt-auto text-lg">${formatRupiah(p.sellPrice)}</p>
         `;
         container.appendChild(card);
     });
@@ -295,16 +355,24 @@ function filterPOSProducts() {
 }
 
 function addToCart(product) {
-    const existing = state.cart.find(item => item.kode === product.code);
+    if (!state.activeSession) {
+        showToast('Peringatan', 'Silakan pilih atau buat Sesi/Plat Nomer terlebih dahulu!', true);
+        return;
+    }
+
+    const activeCart = state.sessions[state.activeSession];
+    const existing = activeCart.find(item => item.kode === product.code);
+    
     if (existing) {
         if (existing.qty < product.stock) {
             existing.qty += 1;
             existing.total_harga = existing.qty * existing.harga_satuan;
         } else {
             showToast('Peringatan', 'Jumlah melebihi stok yang ada!', true);
+            return;
         }
     } else {
-        state.cart.push({
+        activeCart.push({
             kode: product.code,
             nama: product.name,
             harga_satuan: product.sellPrice,
@@ -312,11 +380,36 @@ function addToCart(product) {
             total_harga: product.sellPrice
         });
     }
+    
     renderCart();
+    syncActiveSession();
+}
+
+function setCartQty(index, value) {
+    if (!state.activeSession) return;
+    const activeCart = state.sessions[state.activeSession];
+    const item = activeCart[index];
+    const product = state.products.find(p => p.code === item.kode);
+    
+    let newQty = parseInt(value, 10) || 1;
+    if (newQty <= 0) newQty = 1;
+    
+    if (newQty <= product.stock) {
+        item.qty = newQty;
+        item.total_harga = item.qty * item.harga_satuan;
+    } else {
+        item.qty = product.stock;
+        item.total_harga = item.qty * item.harga_satuan;
+        showToast('Peringatan', `Stok maksimal hanya ${product.stock}!`, true);
+    }
+    renderCart();
+    syncActiveSession();
 }
 
 function updateCartQty(index, change) {
-    const item = state.cart[index];
+    if (!state.activeSession) return;
+    const activeCart = state.sessions[state.activeSession];
+    const item = activeCart[index];
     const product = state.products.find(p => p.code === item.kode);
     
     let newQty = item.qty + change;
@@ -325,13 +418,17 @@ function updateCartQty(index, change) {
         item.total_harga = item.qty * item.harga_satuan;
     } else if (newQty > product.stock) {
          showToast('Peringatan', 'Jumlah melebihi stok yang ada!', true);
+         return;
     }
     renderCart();
+    syncActiveSession();
 }
 
 function removeFromCart(index) {
-    state.cart.splice(index, 1);
+    if (!state.activeSession) return;
+    state.sessions[state.activeSession].splice(index, 1);
     renderCart();
+    syncActiveSession();
 }
 
 function renderCart() {
@@ -342,19 +439,20 @@ function renderCart() {
     
     container.innerHTML = '';
     
-    if (state.cart.length === 0) {
+    if (!state.activeSession || !state.sessions[state.activeSession] || state.sessions[state.activeSession].length === 0) {
         emptyMsg.style.display = 'block';
         totalDisplay.textContent = 'Rp 0';
         btnCheckout.disabled = true;
         return;
     }
     
+    const activeCart = state.sessions[state.activeSession];
     emptyMsg.style.display = 'none';
     btnCheckout.disabled = false;
     
     let total = 0;
     
-    state.cart.forEach((item, index) => {
+    activeCart.forEach((item, index) => {
         total += item.total_harga;
         const el = document.createElement('div');
         el.className = 'flex justify-between items-center bg-[#F5F6FA] rounded-2xl p-4 mb-3 transition-all hover:bg-blue-50';
@@ -380,19 +478,26 @@ function renderCart() {
 }
 
 async function processCheckout() {
-    if (state.cart.length === 0) return;
+    if (!state.activeSession) return;
+    const activeCart = state.sessions[state.activeSession];
+    if (!activeCart || activeCart.length === 0) return;
     
-    const totalBelanja = state.cart.reduce((sum, item) => sum + item.total_harga, 0);
+    const totalBelanja = activeCart.reduce((sum, item) => sum + item.total_harga, 0);
     
     showLoader();
     try {
         const res = await callAPI('processTransaction', {
-            cart: state.cart,
+            sesi: state.activeSession,
             totalBelanja: totalBelanja
         });
         
-        showToast('Sukses', `Transaksi berhasil! ID: ${res.transactionId}`);
-        state.cart = [];
+        showToast('Sukses', `Transaksi Sesi ${state.activeSession} berhasil! ID: ${res.transactionId}`);
+        
+        // Bersihkan sesi aktif setelah checkout
+        delete state.sessions[state.activeSession];
+        state.activeSession = null;
+        
+        renderSessionDropdown();
         renderCart();
         loadProducts(); // Refresh stock
         if(state.role === 'Admin') loadKas(); // Refresh Kas
@@ -401,6 +506,19 @@ async function processCheckout() {
     } finally {
         hideLoader();
     }
+}
+                <input type="number" onchange="setCartQty(${index}, this.value)" value="${item.qty}" class="w-10 text-sm font-bold text-center text-gray-800 bg-transparent border-none focus:outline-none focus:ring-2 focus:ring-[#5B65FF] rounded px-1 hide-arrows">
+                <button onclick="updateCartQty(${index}, 1)" class="w-7 h-7 flex items-center justify-center bg-[#5B65FF] hover:bg-[#4A55FF] text-white rounded-lg font-bold transition-colors">+</button>
+            </div>
+            <div class="text-right flex flex-col items-end w-1/4">
+                <p class="font-bold text-sm text-gray-800">${formatRupiah(item.total_harga)}</p>
+                <button onclick="removeFromCart(${index})" class="text-xs text-red-500 mt-1 hover:text-red-700 font-medium transition-colors">Hapus</button>
+            </div>
+        `;
+        container.appendChild(el);
+    });
+    
+    totalDisplay.textContent = formatRupiah(total);
 }
 
 // === ADMIN (STOK) LOGIC ===
