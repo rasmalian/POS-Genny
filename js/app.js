@@ -455,20 +455,30 @@ function renderCart() {
     activeCart.forEach((item, index) => {
         total += item.total_harga;
         const el = document.createElement('div');
-        el.className = 'flex justify-between items-center bg-[#F5F6FA] rounded-2xl p-4 mb-3 transition-all hover:bg-blue-50';
+        el.className = 'flex flex-col bg-[#F5F6FA] rounded-2xl p-4 mb-3 transition-all hover:bg-blue-50 border border-transparent hover:border-blue-100';
         el.innerHTML = `
-            <div class="flex-grow w-1/2 pr-2">
-                <p class="font-bold text-sm text-gray-800 truncate">${item.nama}</p>
-                <p class="text-xs text-[#5B65FF] font-medium">${formatRupiah(item.harga_satuan)}</p>
+            <!-- Baris Atas: Nama & Tombol Hapus -->
+            <div class="flex justify-between items-start mb-2">
+                <p class="font-bold text-sm text-gray-800 leading-tight pr-3">${item.nama}</p>
+                <button onclick="removeFromCart(${index})" class="text-gray-400 hover:text-red-500 transition-colors p-1 bg-white rounded-full shadow-sm">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                </button>
             </div>
-            <div class="flex items-center space-x-2 bg-white rounded-xl p-1 shadow-sm mr-3">
-                <button onclick="updateCartQty(${index}, -1)" class="w-7 h-7 flex items-center justify-center bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-lg font-bold transition-colors">-</button>
-                <input type="number" onchange="setCartQty(${index}, this.value)" value="${item.qty}" class="w-10 text-sm font-bold text-center text-gray-800 bg-transparent border-none focus:outline-none focus:ring-2 focus:ring-[#5B65FF] rounded px-1 hide-arrows">
-                <button onclick="updateCartQty(${index}, 1)" class="w-7 h-7 flex items-center justify-center bg-[#5B65FF] hover:bg-[#4A55FF] text-white rounded-lg font-bold transition-colors">+</button>
-            </div>
-            <div class="text-right flex flex-col items-end w-1/4">
-                <p class="font-bold text-sm text-gray-800">${formatRupiah(item.total_harga)}</p>
-                <button onclick="removeFromCart(${index})" class="text-xs text-red-500 mt-1 hover:text-red-700 font-medium transition-colors">Hapus</button>
+            
+            <!-- Baris Bawah: Harga Satuan, Qty, Total -->
+            <div class="flex justify-between items-end">
+                <div class="flex flex-col">
+                    <span class="text-xs text-gray-500 mb-1">${formatRupiah(item.harga_satuan)} / item</span>
+                    <div class="flex items-center space-x-1 bg-white rounded-xl p-1 shadow-sm w-max border border-gray-100">
+                        <button onclick="updateCartQty(${index}, -1)" class="w-8 h-8 flex items-center justify-center bg-gray-50 hover:bg-gray-200 text-gray-600 rounded-lg font-bold transition-colors">-</button>
+                        <input type="number" onchange="setCartQty(${index}, this.value)" value="${item.qty}" class="w-10 text-sm font-bold text-center text-gray-800 bg-transparent border-none focus:outline-none focus:ring-2 focus:ring-[#5B65FF] rounded px-1 hide-arrows">
+                        <button onclick="updateCartQty(${index}, 1)" class="w-8 h-8 flex items-center justify-center bg-gradient-to-r from-[#5B65FF] to-[#9146FF] text-white rounded-lg font-bold transition-colors shadow-sm">+</button>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <span class="block text-[10px] text-gray-400 font-medium uppercase tracking-wider mb-1">Subtotal</span>
+                    <p class="font-extrabold text-base text-gray-800">${formatRupiah(item.total_harga)}</p>
+                </div>
             </div>
         `;
         container.appendChild(el);
