@@ -365,7 +365,7 @@ function renderCart() {
             </div>
             <div class="flex items-center space-x-2 bg-white rounded-xl p-1 shadow-sm mr-3">
                 <button onclick="updateCartQty(${index}, -1)" class="w-7 h-7 flex items-center justify-center bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-lg font-bold transition-colors">-</button>
-                <span class="text-sm font-bold w-6 text-center text-gray-800">${item.qty}</span>
+                <input type="number" onchange="setCartQty(${index}, this.value)" value="${item.qty}" class="w-10 text-sm font-bold text-center text-gray-800 bg-transparent border-none focus:outline-none focus:ring-2 focus:ring-[#5B65FF] rounded px-1 hide-arrows">
                 <button onclick="updateCartQty(${index}, 1)" class="w-7 h-7 flex items-center justify-center bg-[#5B65FF] hover:bg-[#4A55FF] text-white rounded-lg font-bold transition-colors">+</button>
             </div>
             <div class="text-right flex flex-col items-end w-1/4">
