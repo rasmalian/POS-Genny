@@ -231,6 +231,19 @@ function showView(viewId) {
         if(textSpan) textSpan.classList.remove('hidden');
         loadKas(); // Refresh kas data when opened
     }
+    if (viewId === 'penjualan-view') {
+        document.getElementById('nav-penjualan').classList.add('bg-white/20');
+        document.getElementById('nav-penjualan').classList.remove('hover:bg-white/10');
+        document.getElementById('nav-penjualan-mobile').classList.add('text-[#5B65FF]', 'bg-blue-50');
+        document.getElementById('nav-penjualan-mobile').classList.remove('text-gray-400');
+        const textSpan = document.getElementById('nav-penjualan-mobile').querySelector('.nav-text');
+        if(textSpan) textSpan.classList.remove('hidden');
+        
+        if (!state.availablePenjualanSheets) {
+            loadPenjualanSheets();
+        }
+        loadPenjualan();
+    }
 }
 
 // === DATA LOADING ===
