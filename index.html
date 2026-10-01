@@ -89,8 +89,14 @@
                     <div class="mb-4">
                         <input type="text" id="pos-search" placeholder="Cari barang..." class="w-full px-5 py-3 bg-[#F5F6FA] text-gray-800 border-none rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#5B65FF]" onkeyup="filterPOSProducts()">
                     </div>
-                    <div id="pos-product-list" class="grid grid-cols-2 lg:grid-cols-3 gap-4 overflow-y-auto pr-2 pb-4">
+                    <div id="pos-product-list" class="grid grid-cols-2 lg:grid-cols-3 gap-4 overflow-y-auto pr-2 pb-2 flex-grow">
                         <!-- Products will be injected here -->
+                    </div>
+                    <!-- Pagination Controls -->
+                    <div id="pos-pagination" class="flex justify-between items-center pt-3 border-t border-gray-100 mt-auto hidden">
+                        <button id="btn-prev-page" class="px-3 py-1 bg-white border border-gray-200 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors disabled:opacity-50">&laquo; Prev</button>
+                        <span id="pos-page-info" class="text-xs font-bold text-gray-500">Hal 1 / 1</span>
+                        <button id="btn-next-page" class="px-3 py-1 bg-white border border-gray-200 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors disabled:opacity-50">Next &raquo;</button>
                     </div>
                 </div>
                 

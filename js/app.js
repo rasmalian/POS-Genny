@@ -4,6 +4,8 @@ const state = {
     role: localStorage.getItem('pos_role') || null,
     apiUrl: localStorage.getItem('pos_api_url') || '',
     products: [],
+    posCurrentPage: 1,
+    posItemsPerPage: 20,
     sessions: {}, // Format: { "Plat Nomer": [{kode, nama, qty, ...}] }
     activeSession: null,
     kasData: {}
@@ -332,7 +334,18 @@ function renderPOSProducts(filterText = '') {
         p.code.toLowerCase().includes(filterText.toLowerCase())
     );
 
-    filtered.forEach(p => {
+    const totalItems = filtered.length;
+    const totalPages = Math.ceil(totalItems / state.posItemsPerPage) || 1;
+    
+    // Pastikan current page tidak melebihi total pages (akibat filter)
+    if (state.posCurrentPage > totalPages) {
+        state.posCurrentPage = 1;
+    }
+
+    const startIdx = (state.posCurrentPage - 1) * state.posItemsPerPage;
+    const paginated = filtered.slice(startIdx, startIdx + state.posItemsPerPage);
+
+    paginated.forEach(p => {
         const card = document.createElement('div');
         card.className = `p-4 cursor-pointer hover:shadow-xl transition-all transform hover:-translate-y-1 bg-[#F5F6FA] flex flex-col rounded-2xl ${p.stock <= 0 ? 'opacity-50 grayscale' : ''}`;
         card.onclick = () => p.stock > 0 ? addToCart(p) : showToast('Stok Habis', `${p.name} tidak tersedia`, true);
@@ -347,9 +360,45 @@ function renderPOSProducts(filterText = '') {
         `;
         container.appendChild(card);
     });
+    
+    renderPOSPagination(totalPages);
+}
+
+function renderPOSPagination(totalPages) {
+    const paginationContainer = document.getElementById('pos-pagination');
+    const btnPrev = document.getElementById('btn-prev-page');
+    const btnNext = document.getElementById('btn-next-page');
+    const pageInfo = document.getElementById('pos-page-info');
+    
+    // Jika barang kurang dari batas per halaman, sembunyikan navigasi
+    if (totalPages <= 1) {
+        paginationContainer.classList.add('hidden');
+        return;
+    }
+    
+    paginationContainer.classList.remove('hidden');
+    pageInfo.textContent = `Hal ${state.posCurrentPage} / ${totalPages}`;
+    
+    btnPrev.disabled = state.posCurrentPage === 1;
+    btnNext.disabled = state.posCurrentPage === totalPages;
+    
+    btnPrev.onclick = () => {
+        if (state.posCurrentPage > 1) {
+            state.posCurrentPage--;
+            renderPOSProducts(document.getElementById('pos-search').value);
+        }
+    };
+    
+    btnNext.onclick = () => {
+        if (state.posCurrentPage < totalPages) {
+            state.posCurrentPage++;
+            renderPOSProducts(document.getElementById('pos-search').value);
+        }
+    };
 }
 
 function filterPOSProducts() {
+    state.posCurrentPage = 1; // Reset halaman ke 1 setiap kali mencari
     const text = document.getElementById('pos-search').value;
     renderPOSProducts(text);
 }
