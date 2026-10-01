@@ -178,6 +178,12 @@ function initApp() {
         loadKas();
     }
     
+    // Load initial data
+    loadProducts();
+    if (state.role === 'Admin') {
+        loadKas();
+    }
+    
     showView('pos-view');
 }
 
@@ -194,27 +200,35 @@ function showView(viewId) {
     
     // Mobile Nav
     document.querySelectorAll('.nav-item-mobile').forEach(el => {
-        el.classList.remove('text-blue-600', 'bg-blue-50');
-        el.classList.add('text-gray-500');
+        el.classList.remove('text-[#5B65FF]', 'bg-blue-50');
+        el.classList.add('text-gray-400');
+        const textSpan = el.querySelector('.nav-text');
+        if(textSpan) textSpan.classList.add('hidden');
     });
     
     if (viewId === 'pos-view') {
         document.getElementById('nav-pos').classList.add('bg-white/20');
         document.getElementById('nav-pos').classList.remove('hover:bg-white/10');
-        document.getElementById('nav-pos-mobile').classList.add('text-blue-600', 'bg-blue-50');
-        document.getElementById('nav-pos-mobile').classList.remove('text-gray-500');
+        document.getElementById('nav-pos-mobile').classList.add('text-[#5B65FF]', 'bg-blue-50');
+        document.getElementById('nav-pos-mobile').classList.remove('text-gray-400');
+        const textSpan = document.getElementById('nav-pos-mobile').querySelector('.nav-text');
+        if(textSpan) textSpan.classList.remove('hidden');
     }
     if (viewId === 'admin-view') {
         document.getElementById('nav-admin').classList.add('bg-white/20');
         document.getElementById('nav-admin').classList.remove('hover:bg-white/10');
-        document.getElementById('nav-admin-mobile').classList.add('text-blue-600', 'bg-blue-50');
-        document.getElementById('nav-admin-mobile').classList.remove('text-gray-500');
+        document.getElementById('nav-admin-mobile').classList.add('text-[#5B65FF]', 'bg-blue-50');
+        document.getElementById('nav-admin-mobile').classList.remove('text-gray-400');
+        const textSpan = document.getElementById('nav-admin-mobile').querySelector('.nav-text');
+        if(textSpan) textSpan.classList.remove('hidden');
     }
     if (viewId === 'kas-view') {
         document.getElementById('nav-kas').classList.add('bg-white/20');
         document.getElementById('nav-kas').classList.remove('hover:bg-white/10');
-        document.getElementById('nav-kas-mobile').classList.add('text-blue-600', 'bg-blue-50');
-        document.getElementById('nav-kas-mobile').classList.remove('text-gray-500');
+        document.getElementById('nav-kas-mobile').classList.add('text-[#5B65FF]', 'bg-blue-50');
+        document.getElementById('nav-kas-mobile').classList.remove('text-gray-400');
+        const textSpan = document.getElementById('nav-kas-mobile').querySelector('.nav-text');
+        if(textSpan) textSpan.classList.remove('hidden');
         loadKas(); // Refresh kas data when opened
     }
 }
