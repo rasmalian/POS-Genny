@@ -186,12 +186,35 @@ function showView(viewId) {
     document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
     document.getElementById(viewId).classList.remove('hidden');
     
-    document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('bg-blue-700'));
+    // Desktop Nav
+    document.querySelectorAll('.nav-item').forEach(el => {
+        el.classList.remove('bg-white/20');
+        el.classList.add('hover:bg-white/10');
+    });
     
-    if (viewId === 'pos-view') document.getElementById('nav-pos').classList.add('bg-blue-700');
-    if (viewId === 'admin-view') document.getElementById('nav-admin').classList.add('bg-blue-700');
+    // Mobile Nav
+    document.querySelectorAll('.nav-item-mobile').forEach(el => {
+        el.classList.remove('text-blue-600', 'bg-blue-50');
+        el.classList.add('text-gray-500');
+    });
+    
+    if (viewId === 'pos-view') {
+        document.getElementById('nav-pos').classList.add('bg-white/20');
+        document.getElementById('nav-pos').classList.remove('hover:bg-white/10');
+        document.getElementById('nav-pos-mobile').classList.add('text-blue-600', 'bg-blue-50');
+        document.getElementById('nav-pos-mobile').classList.remove('text-gray-500');
+    }
+    if (viewId === 'admin-view') {
+        document.getElementById('nav-admin').classList.add('bg-white/20');
+        document.getElementById('nav-admin').classList.remove('hover:bg-white/10');
+        document.getElementById('nav-admin-mobile').classList.add('text-blue-600', 'bg-blue-50');
+        document.getElementById('nav-admin-mobile').classList.remove('text-gray-500');
+    }
     if (viewId === 'kas-view') {
-        document.getElementById('nav-kas').classList.add('bg-blue-700');
+        document.getElementById('nav-kas').classList.add('bg-white/20');
+        document.getElementById('nav-kas').classList.remove('hover:bg-white/10');
+        document.getElementById('nav-kas-mobile').classList.add('text-blue-600', 'bg-blue-50');
+        document.getElementById('nav-kas-mobile').classList.remove('text-gray-500');
         loadKas(); // Refresh kas data when opened
     }
 }
