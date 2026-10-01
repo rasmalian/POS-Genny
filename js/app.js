@@ -402,7 +402,6 @@ function filterPOSProducts() {
     const text = document.getElementById('pos-search').value;
     renderPOSProducts(text);
 }
-
 function addToCart(product) {
     if (!state.activeSession) {
         showToast('Peringatan', 'Silakan pilih atau buat Sesi/Plat Nomer terlebih dahulu!', true);
@@ -416,6 +415,7 @@ function addToCart(product) {
         if (existing.qty < product.stock) {
             existing.qty += 1;
             existing.total_harga = existing.qty * existing.harga_satuan;
+            showToast('Ditambahkan', `${product.name} ditambah jumlahnya di Sesi ${state.activeSession}`);
         } else {
             showToast('Peringatan', 'Jumlah melebihi stok yang ada!', true);
             return;
@@ -428,6 +428,7 @@ function addToCart(product) {
             qty: 1,
             total_harga: product.sellPrice
         });
+        showToast('Sukses', `${product.name} dimasukkan ke Sesi ${state.activeSession}`);
     }
     
     renderCart();
