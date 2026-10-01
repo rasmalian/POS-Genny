@@ -782,23 +782,10 @@ function renderPenjualan() {
         if (filterDate) {
             try {
                 const tStr = String(row.tanggal);
-                const [fYear, fMonth, fDay] = filterDate.split('-');
-                const fMonthNoPad = parseInt(fMonth, 10).toString();
-                const fDayNoPad = parseInt(fDay, 10).toString();
                 
-                const possibleFormats = [
-                    filterDate,
-                    `${fDay}/${fMonth}/${fYear}`,
-                    `${fDayNoPad}/${fMonthNoPad}/${fYear}`,
-                    `${fDay}-${fMonth}-${fYear}`,
-                    `${fDayNoPad}-${fMonthNoPad}-${fYear}`,
-                    `${fMonth}/${fDay}/${fYear}`,
-                    `${fMonthNoPad}/${fDayNoPad}/${fYear}`
-                ];
-                
-                if (possibleFormats.some(fmt => tStr.startsWith(fmt) || tStr.includes(fmt + ' ') || tStr.includes(fmt + 'T') || tStr === fmt)) {
-                    matchDate = true;
-                } else {
+                // If it's a standard ISO string (has T and Z), strictly use Date parsing 
+                // to ensure correct local timezone shifting (e.g. UTC to WIB).
+                if (tStr.includes('T') && tStr.includes('Z')) {
                     const d = new Date(tStr);
                     if (!isNaN(d)) {
                         const yy = d.getFullYear();
@@ -808,6 +795,35 @@ function renderPenjualan() {
                         matchDate = (rowDateStr === filterDate);
                     } else {
                         matchDate = false;
+                    }
+                } else {
+                    const [fYear, fMonth, fDay] = filterDate.split('-');
+                    const fMonthNoPad = parseInt(fMonth, 10).toString();
+                    const fDayNoPad = parseInt(fDay, 10).toString();
+                    
+                    const possibleFormats = [
+                        filterDate,
+                        `${fDay}/${fMonth}/${fYear}`,
+                        `${fDayNoPad}/${fMonthNoPad}/${fYear}`,
+                        `${fDay}-${fMonth}-${fYear}`,
+                        `${fDayNoPad}-${fMonthNoPad}-${fYear}`,
+                        `${fMonth}/${fDay}/${fYear}`,
+                        `${fMonthNoPad}/${fDayNoPad}/${fYear}`
+                    ];
+                    
+                    if (possibleFormats.some(fmt => tStr.startsWith(fmt) || tStr.includes(fmt + ' ') || tStr === fmt)) {
+                        matchDate = true;
+                    } else {
+                        const d = new Date(tStr);
+                        if (!isNaN(d)) {
+                            const yy = d.getFullYear();
+                            const mm = String(d.getMonth() + 1).padStart(2, '0');
+                            const dd = String(d.getDate()).padStart(2, '0');
+                            const rowDateStr = `${yy}-${mm}-${dd}`;
+                            matchDate = (rowDateStr === filterDate);
+                        } else {
+                            matchDate = false;
+                        }
                     }
                 }
             } catch(e){}
