@@ -781,7 +781,26 @@ function renderPenjualan() {
         let matchDate = true;
         if (filterDate) {
             try {
-                const d = new Date(row.tanggal);
+                let d;
+                const tStr = String(row.tanggal);
+                if (tStr.includes('/') && tStr.split('/').length === 3) {
+                    const parts = tStr.split(' ');
+                    const dParts = parts[0].split('/');
+                    const dd = parseInt(dParts[0], 10);
+                    const mm = parseInt(dParts[1], 10) - 1;
+                    const yyyy = parseInt(dParts[2], 10);
+                    d = new Date(yyyy, mm, dd);
+                } else if (tStr.match(/^\d{2}-\d{2}-\d{4}/)) {
+                    const parts = tStr.split(' ');
+                    const dParts = parts[0].split('-');
+                    const dd = parseInt(dParts[0], 10);
+                    const mm = parseInt(dParts[1], 10) - 1;
+                    const yyyy = parseInt(dParts[2], 10);
+                    d = new Date(yyyy, mm, dd);
+                } else {
+                    d = new Date(tStr);
+                }
+                
                 if (!isNaN(d)) {
                     const yy = d.getFullYear();
                     const mm = String(d.getMonth() + 1).padStart(2, '0');
@@ -801,12 +820,32 @@ function renderPenjualan() {
             
             let dateStr = row.tanggal;
             try {
-                const d = new Date(row.tanggal);
+                let d;
+                const tStr = String(row.tanggal);
+                if (tStr.includes('/') && tStr.split('/').length === 3) {
+                    const parts = tStr.split(' ');
+                    const dParts = parts[0].split('/');
+                    const dd = parseInt(dParts[0], 10);
+                    const mm = parseInt(dParts[1], 10) - 1;
+                    const yyyy = parseInt(dParts[2], 10);
+                    const tParts = parts[1] ? parts[1].split(':') : [0,0,0];
+                    d = new Date(yyyy, mm, dd, parseInt(tParts[0]||0), parseInt(tParts[1]||0), parseInt(tParts[2]||0));
+                } else if (tStr.match(/^\d{2}-\d{2}-\d{4}/)) {
+                    const parts = tStr.split(' ');
+                    const dParts = parts[0].split('-');
+                    const dd = parseInt(dParts[0], 10);
+                    const mm = parseInt(dParts[1], 10) - 1;
+                    const yyyy = parseInt(dParts[2], 10);
+                    const tParts = parts[1] ? parts[1].split(':') : [0,0,0];
+                    d = new Date(yyyy, mm, dd, parseInt(tParts[0]||0), parseInt(tParts[1]||0), parseInt(tParts[2]||0));
+                } else {
+                    d = new Date(tStr);
+                }
+                
                 if (!isNaN(d)) {
                     dateStr = d.toLocaleString('id-ID', {day: 'numeric', month: 'short', year:'numeric', hour:'2-digit', minute:'2-digit'});
                 }
             } catch(e){}
-
             tr.innerHTML = `
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${dateStr}</td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-800">${row.id}</td>
