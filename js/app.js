@@ -613,6 +613,9 @@ async function processCheckout() {
         
         showToast('Sukses', `Transaksi Sesi ${state.activeSession} berhasil! ID: ${res.transactionId}`);
         
+        // Cetak struk otomatis setelah transaksi sukses
+        printReceipt(res.transactionId, activeCart, totalBelanja);
+        
         // Bersihkan sesi aktif setelah checkout
         delete state.sessions[state.activeSession];
         state.activeSession = null;
@@ -626,6 +629,92 @@ async function processCheckout() {
     } finally {
         hideLoader();
     }
+}
+
+function printReceipt(transactionId, cart, total) {
+    const date = new Date().toLocaleString('id-ID');
+    let itemsHtml = '';
+    cart.forEach(item => {
+        itemsHtml += `
+            <div style="display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 12px;">
+                <span>${item.name} <br> <small>${item.jumlah}x @${formatRupiah(item.harga)}</small></span>
+                <span style="text-align: right;">${formatRupiah(item.total_harga)}</span>
+            </div>
+        `;
+    });
+
+    const receiptHtml = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Struk Pembayaran</title>
+            <style>
+                @page { margin: 0; }
+                body {
+                    font-family: 'Courier New', Courier, monospace;
+                    color: #000;
+                    width: 100%;
+                    max-width: 58mm; /* Default ukuran printer thermal */
+                    margin: 0 auto;
+                    padding: 10px;
+                    box-sizing: border-box;
+                }
+                .text-center { text-align: center; }
+                .font-bold { font-weight: bold; }
+                .border-bottom { border-bottom: 1px dashed #000; margin-bottom: 10px; padding-bottom: 10px; }
+                .total-row { display: flex; justify-content: space-between; font-weight: bold; margin-top: 10px; font-size: 14px;}
+                .footer { text-align: center; margin-top: 20px; font-size: 11px; }
+            </style>
+        </head>
+        <body>
+            <div class="text-center font-bold" style="font-size: 16px; margin-bottom: 5px;">TOKO POS-GENNY</div>
+            <div class="text-center border-bottom" style="font-size: 11px;">
+                Tgl: ${date}<br>
+                ID: ${transactionId}
+            </div>
+            
+            <div class="items" style="margin-bottom: 10px;">
+                ${itemsHtml}
+            </div>
+            
+            <div class="border-bottom"></div>
+            
+            <div class="total-row">
+                <span>TOTAL</span>
+                <span>${formatRupiah(total)}</span>
+            </div>
+            
+            <div class="footer border-bottom">
+                Terima kasih atas kunjungan Anda!<br>
+                Simpan struk ini sebagai bukti pembayaran.
+            </div>
+        </body>
+        </html>
+    `;
+
+    const printFrame = document.createElement('iframe');
+    printFrame.style.position = 'fixed';
+    printFrame.style.right = '-1000px';
+    printFrame.style.bottom = '-1000px';
+    printFrame.style.width = '0';
+    printFrame.style.height = '0';
+    printFrame.style.border = '0';
+    document.body.appendChild(printFrame);
+
+    printFrame.contentWindow.document.open();
+    printFrame.contentWindow.document.write(receiptHtml);
+    printFrame.contentWindow.document.close();
+
+    // Tunggu render selesai baru panggil print
+    setTimeout(() => {
+        printFrame.contentWindow.focus();
+        printFrame.contentWindow.print();
+        
+        // Bersihkan iframe setelah dialog print ditutup
+        setTimeout(() => {
+            document.body.removeChild(printFrame);
+        }, 2000);
+    }, 500);
 }
 
 // === ADMIN (STOK) LOGIC ===
