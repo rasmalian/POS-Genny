@@ -614,7 +614,7 @@ async function processCheckout() {
         showToast('Sukses', `Transaksi Sesi ${state.activeSession} berhasil! ID: ${res.transactionId}`);
         
         // Cetak struk otomatis setelah transaksi sukses
-        printReceipt(res.transactionId, activeCart, totalBelanja);
+        printReceipt(res.transactionId, activeCart, totalBelanja, state.activeSession);
         
         // Bersihkan sesi aktif setelah checkout
         delete state.sessions[state.activeSession];
@@ -631,7 +631,7 @@ async function processCheckout() {
     }
 }
 
-function printReceipt(transactionId, cart, total) {
+function printReceipt(transactionId, cart, total, sessionName) {
     const date = new Date().toLocaleString('id-ID');
     let itemsHtml = '';
     cart.forEach(item => {
@@ -647,7 +647,7 @@ function printReceipt(transactionId, cart, total) {
         <!DOCTYPE html>
         <html>
         <head>
-            <title>Struk Pembayaran</title>
+            <title>Struk_${sessionName}</title>
             <style>
                 @page { margin: 0; }
                 body {
@@ -670,7 +670,8 @@ function printReceipt(transactionId, cart, total) {
             <div class="text-center font-bold" style="font-size: 16px; margin-bottom: 5px;">TOKO POS-GENNY</div>
             <div class="text-center border-bottom" style="font-size: 11px;">
                 Tgl: ${date}<br>
-                ID: ${transactionId}
+                ID: ${transactionId}<br>
+                Sesi: ${sessionName}
             </div>
             
             <div class="items" style="margin-bottom: 10px;">
