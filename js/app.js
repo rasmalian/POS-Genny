@@ -637,7 +637,7 @@ function printReceipt(transactionId, cart, total) {
     cart.forEach(item => {
         itemsHtml += `
             <div style="display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 12px;">
-                <span>${item.name} <br> <small>${item.jumlah}x @${formatRupiah(item.harga)}</small></span>
+                <span>${item.nama} <br> <small>${item.qty}x @${formatRupiah(item.harga_satuan)}</small></span>
                 <span style="text-align: right;">${formatRupiah(item.total_harga)}</span>
             </div>
         `;
