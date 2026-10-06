@@ -98,7 +98,17 @@ async function callAPI(action, data = {}) {
             body: JSON.stringify(payload)
         });
 
-        const result = await response.json();
+        const textResult = await response.text();
+        let result;
+        try {
+            result = JSON.parse(textResult);
+        } catch (e) {
+            console.error("Backend Error HTML:", textResult);
+            const match = textResult.match(/<div class="error-message">(.*?)<\/div>/i) || textResult.match(/<title>Error<\/title>.*?<body>(.*?)<\/body>/is);
+            const errMsg = match ? match[1].replace(/<[^>]*>?/gm, '').trim() : "Terjadi kesalahan di server (Script Error).";
+            throw new Error(`Server Error: ${errMsg}`);
+        }
+        
         if (result.status === 'error') {
             throw new Error(result.message);
         }
