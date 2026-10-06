@@ -269,6 +269,13 @@ async function loadKas() {
     try {
         const res = await callAPI('getKas');
         state.kasData = res.data;
+        
+        // Pastikan data penjualan termuat untuk kalkulasi profit
+        if (state.penjualan.length === 0) {
+            const resPenjualan = await callAPI('getPenjualan', { sheetName: "Penjualan" });
+            state.penjualan = resPenjualan.data || [];
+        }
+        
         renderKas();
     } catch (err) {
         console.error("Gagal memuat data kas", err);
@@ -720,6 +727,20 @@ function renderKas() {
     if (!state.kasData) return;
     
     document.getElementById('current-kas-display').textContent = formatRupiah(state.kasData.saldoTerakhir || 0);
+    let profit = 0;
+    if (state.penjualan && state.products) {
+        state.penjualan.forEach(row => {
+            const product = state.products.find(p => p.code === row.kode);
+            if (product) {
+                const buyPrice = parseFloat(product.buyPrice) || 0;
+                profit += (parseFloat(row.total) || 0) - (buyPrice * (parseFloat(row.qty) || 0));
+            }
+        });
+    }
+    const profitDisplay = document.getElementById('total-profit-display');
+    if (profitDisplay) {
+        profitDisplay.textContent = formatRupiah(profit);
+    }
     
     const tbody = document.getElementById('kas-history-table');
     tbody.innerHTML = '';
